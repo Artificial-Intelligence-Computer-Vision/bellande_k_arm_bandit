@@ -124,7 +124,9 @@ class K_armed_Bandit_Problem(object):
             return self.rewards, optimal_action
 
         elif methods == "epsilon_greedy":
+            print("here")
             optimal_action = self.epsilon_greedy(problem_number)
+            print("here")
             return self.rewards, optimal_action
 
         elif methods  == "ucb":
@@ -139,13 +141,14 @@ class K_armed_Bandit_Problem(object):
         optimal = np.zeros((self.number_bandit_problems, self.number_of_time_step))
         
         if alpha_baseline == "False":
-            for i in range(self.number_of_time_step):
+            for i in range(self.number_bandit_problems):
                 reward[i], optimal[i] = self.play_k_armed_bandit(problem_number = i, methods = method_type)
             return reward, optimal
 
         elif alpha_baseline == "True":
-            for i in range(self.number_of_time_step):
+            for i in range(self.number_bandit_problems):
                 reward[i], optimal[i] = function(problem_number = i)
+            return reward, optimal
 
 
 
