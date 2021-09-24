@@ -1,4 +1,4 @@
-from header_import import *
+from header_imports import *
 
 
 class K_armed_Bandit_Problem(object):
@@ -13,19 +13,17 @@ class K_armed_Bandit_Problem(object):
 
     # Return Q*(a)
     def k_armed_bandit(self):
-        return np.random.normal(0,1,(self.number_bandit_problems, self.k))
+        return np.random.normal(0,1, (self.number_bandit_problems, self.k))
     
     
 
     def greedy(self, problem_number):
 
-         for i in range(self.number_of_time_step):
-
+        for i in range(self.number_of_time_step):
             action = self.action_choice(action_type = "greedy_action")
             self.action_value_reward(i, action, problem_number)
 
         optimal_action = self.optimal_action(problem_number)
-        
         return optimal_action
 
 
@@ -35,10 +33,8 @@ class K_armed_Bandit_Problem(object):
         for i in range(self.number_of_time_step):
 
             if np.random.uniform(0,1) < self.epsilon:
-
                 action = self.action_choice(action_type = "epsilon_greedy")
                 self.action_value_reward(i, action, problem_number)
-            
             else:
                 action = self.action_choice(action_type = "greedy_action")
                 self.action_value_reward(i, action, problem_number)
@@ -51,7 +47,6 @@ class K_armed_Bandit_Problem(object):
     def ucb(self, problem_number):
         
         for i in range(self.number_of_time_step):
-
             action = self.action_choice(action_type = "ucb_action")
             self.action_value_reward(i, action, problem_number)
 
@@ -66,7 +61,7 @@ class K_armed_Bandit_Problem(object):
         self.rewards = np.zeros(self.number_of_time_step)
         self.action_each_step = np.zeros(self.number_of_time_step)
         self.actions_taken = np.ones(self.k)
-        self.q_value = self.k_armed_bandit()
+        self.q_values = self.k_armed_bandit()
 
 
 
@@ -92,8 +87,7 @@ class K_armed_Bandit_Problem(object):
 
     def ucb_action_choise(self, q, actions):
 
-        action_array = np.(self.k)
-
+        action_array = np.zeros(self.k)
         for i in range(self.k):
             action_array[i]= self.q[i] + self.c * np.sqrt(np.log(i+1) / self.actions_taken[i])
 
@@ -101,12 +95,12 @@ class K_armed_Bandit_Problem(object):
 
 
 
-    def action_value_reward(count, problem_number, baseline = "None"):    
-        
-        self.action_each_step[count]=action
+    def action_value_reward(self, count, action, problem_number, baseline = "None"):
+
+        self.action_each_step[count] = action
         self.rewards[count] = np.random.normal(self.q_values[problem_number][action],1)
 
-        if baseline = "None":
+        if baseline == "None":
             self.actions_taken[action] += 1
             self.q[action] = self.q[action]+1 / self.actions_taken[action] * (self.rewards[count] - self.q[action])
 
@@ -126,12 +120,12 @@ class K_armed_Bandit_Problem(object):
         self.init_and_reset()
         
         if methods == "greedy":
-            optimal_action= self.greedy(problem_number)
+            optimal_action = self.greedy(problem_number)
             return self.rewards, optimal_action
 
         elif methods == "epsilon_greedy":
             optimal_action = self.epsilon_greedy(problem_number)
-            return self.rewards optimal_action
+            return self.rewards, optimal_action
 
         elif methods  == "ucb":
             optimal_action = self.ucb(problem_number)
@@ -150,8 +144,8 @@ class K_armed_Bandit_Problem(object):
             return reward, optimal
 
         elif alpha_baseline == "True":
-            for i in range(self.number_of_time_step)
-                reward[i], optimal[i] = function()
+            for i in range(self.number_of_time_step):
+                reward[i], optimal[i] = function(problem_number = i)
 
 
 
