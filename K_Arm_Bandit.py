@@ -101,12 +101,14 @@ class K_armed_Bandit_Problem(object):
 
 
 
-    def action_state_reward(count, problem_number):    
+    def action_value_reward(count, problem_number, baseline = "None"):    
         
         self.action_each_step[count]=action
         self.rewards[count] = np.random.normal(self.q_values[problem_number][action],1)
-        self.actions_taken[action] += 1
-        self.q[action] = self.q[action]+1 / self.actions_taken[action] * (self.rewards[count] - self.q[action])
+
+        if baseline = "None":
+            self.actions_taken[action] += 1
+            self.q[action] = self.q[action]+1 / self.actions_taken[action] * (self.rewards[count] - self.q[action])
 
 
 
@@ -331,8 +333,6 @@ class plot_collected_graphs(object):
 
 
 
-
-
 # Gradient Bandit with baseline
 class K_armed_Bandit_Problem_Gradient(K_armed_Bandit_Problem):
     def __init__(self, alpha, baseline):
@@ -346,20 +346,28 @@ class K_armed_Bandit_Problem_Gradient(K_armed_Bandit_Problem):
         return np.exp(user_input)/np.exp(user_input).sum()
 
     
-    def Gradient_Bandit(self):
+    def Gradient_Bandit(self, problem_number):
         
         self.init_and_reset()
 
-        for i in range(self.)
+        for i in range(self.number_of_time_step):
+
+            action = self.action_choice(action_type = "softmax")
+            self.action_value_reward(i, action, problem_number)
+
+            for i in range(self.k):
+                if i == action:
+                    self.q[i] = self.q[i] + self.alpha * (self.rewards[i] - self.baseline) * (1 - self.softmax(self.q)[i])
+                else:
+                    self.q[i] = sel.q[i]  - self.alpha * (self.rewards[i] - self.baseline) * (self.softmax(self.q)[i]) 
+
+            self.actions_taken[action] += 1
 
 
-    def action_and_reward(self, problem_number):
+        optimal_action = self.optimal_action()
 
-        action = np.random.choice(, p=softmax(self.q))
-        act[i] = action
-        self.rewards[count] = np.random.normal(self.q_values[problem_number][action], 1)
-
-
+        return self.rewards, optimal_action
+                
 
     def play(self):
         pass
