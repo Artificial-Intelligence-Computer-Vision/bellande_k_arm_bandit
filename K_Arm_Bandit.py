@@ -83,6 +83,10 @@ class K_armed_Bandit_Problem(object):
         elif action_type == "ucb_action":
             action = self.ucb_action_choise()
             return action
+
+        elif action_type == "softmax":
+            action = np.random.choice(self.actions_taken, p=softmax(self.q))
+            return action
         
 
 
@@ -97,10 +101,10 @@ class K_armed_Bandit_Problem(object):
 
 
 
-    def action_state_reward(count, prob_num):    
+    def action_state_reward(count, problem_number):    
         
         self.action_each_step[count]=action
-        self.rewards[count] = np.random.normal(self.q_values[prob_num][action],1)
+        self.rewards[count] = np.random.normal(self.q_values[problem_number][action],1)
         self.actions_taken[action] += 1
         self.q[action] = self.q[action]+1 / self.actions_taken[action] * (self.rewards[count] - self.q[action])
 
@@ -343,7 +347,17 @@ class K_armed_Bandit_Problem_Gradient(K_armed_Bandit_Problem):
 
     
     def Gradient_Bandit(self):
-        pass
+        
+        self.init_and_reset()
+
+        for i in range(self.)
+
+
+    def action_and_reward(self, problem_number):
+
+        action = np.random.choice(, p=softmax(self.q))
+        act[i] = action
+        self.rewards[count] = np.random.normal(self.q_values[problem_number][action], 1)
 
 
 
