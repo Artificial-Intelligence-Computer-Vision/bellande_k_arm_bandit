@@ -139,15 +139,19 @@ class K_armed_Bandit_Problem(object):
         
 
     # Where it is to play the k armed bandit
-    def play(self, method_type):
+    def play(self, method_type, alpha_baseline = "False", function=None):
         
         reward = np.zeros((self.number_bandit_problems, self.number_of_time_step))
         optimal = np.zeros((self.number_bandit_problems, self.number_of_time_step))
+        
+        if alpha_baseline == "False":
+            for i in range(self.number_of_time_step):
+                reward[i], optimal[i] = self.play_k_armed_bandit(problem_number = i, methods = method_type)
+            return reward, optimal
 
-        for i in range(self.number_of_time_step):
-            self.play_k_armed_bandit(problem_number = i, methods = method_type)
-
-
+        elif alpha_baseline == "True":
+            for i in range(self.number_of_time_step)
+                reward[i], optimal[i] = function()
 
 
 
@@ -178,7 +182,6 @@ class plot_collected_graphs(object):
 
         self.plot_graph_ucb(array_first = "reward")
         self.plot_graph_ucb(array_first = "optimal_action")
-
 
 
 
@@ -214,7 +217,6 @@ class plot_collected_graphs(object):
             plt.plot(self.optimal_action_array[4].mean(axis=0), label="Optimal UCB 2 Method")
             plt.legend()
             plt.savefig((str(self.true_path) + "optimal_methods_compare.png"), dpi =500)
-
 
 
 
@@ -288,9 +290,6 @@ class plot_collected_graphs(object):
 
 
 
-
-
-
     def plot_graph_ucb(self, array_first):
        
         if array_first == "reward":
@@ -332,7 +331,6 @@ class plot_collected_graphs(object):
 
 
 
-
 # Gradient Bandit with baseline
 class K_armed_Bandit_Problem_Gradient(K_armed_Bandit_Problem):
     def __init__(self, alpha, baseline):
@@ -368,13 +366,4 @@ class K_armed_Bandit_Problem_Gradient(K_armed_Bandit_Problem):
 
         return self.rewards, optimal_action
                 
-
-    def play(self):
-        pass
-
-
-
-
-
-
         
