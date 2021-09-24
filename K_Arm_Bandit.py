@@ -120,15 +120,15 @@ class K_armed_Bandit_Problem(object):
         self.init_and_reset()
         
         if methods == "greedy":
-            optimal_action= self.greedy()
+            optimal_action= self.greedy(problem_number)
             return self.rewards, optimal_action
 
         elif methods == "epsilon_greedy":
-            optimal_action = self.epsilon_greedy()
+            optimal_action = self.epsilon_greedy(problem_number)
             return self.rewards optimal_action
 
         elif methods  == "ucb":
-            optimal_action = self.ucb()
+            optimal_action = self.ucb(problem_number)
             return self.rewards, optimal_action
         
 
@@ -145,7 +145,7 @@ class K_armed_Bandit_Problem(object):
 
 
 
-class plot_colected_graphs(object):
+class plot_collected_graphs(object):
     def __init__(self, reward_array, optimal_action_array):
         
         # Path
@@ -323,6 +323,33 @@ class plot_colected_graphs(object):
             plt.plot(optimal.mean(axis=0), label="Optimal UCB Method")
             plt.legend()
             plt.savefig((str(self.true_path) + "optimal_ucb_method_" + name + "_.png"), dpi =500)
+
+
+
+
+
+
+# Gradient Bandit with baseline
+class K_armed_Bandit_Problem_Gradient(K_armed_Bandit_Problem):
+    def __init__(self, alpha, baseline):
+        super().__init__()
+
+        self.alpha = alpha
+        self.baseline = baseline
+
+
+    def softmax(user_input):
+        return np.exp(user_input)/np.exp(user_input).sum()
+
+    
+    def Gradient_Bandit(self):
+        pass
+
+
+
+    def play(self):
+        pass
+
 
 
 
