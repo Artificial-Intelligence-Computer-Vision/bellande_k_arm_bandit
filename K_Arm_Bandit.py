@@ -150,7 +150,9 @@ class plot_colected_graphs(object):
 
         self.true_path = self.path + self.pdf_type
 
-        self.plot_graphs_methods()
+        self.plot_graphs_methods(array_first = "reward")
+        self.plot_graphs_methods(array_first = "optimal_action")
+
         
 
         # Print each seperately
@@ -161,73 +163,152 @@ class plot_colected_graphs(object):
 
 
 
-    def plot_graphs_methods(self):
 
-        plt.figure(figsize=(40,16))
-        plt.title('Average Reward vs Time steps')
-        plt.xlabel('Time_steps', fontsize=18)
-        plt.ylabel('Reward', fontsize=16)
-        plt.plot(self.rewards_array[0].mean(axis=0), label="Reward Greedy Method")
-        plt.plot(self.rewards_array[1].mean(axis=0), label="Reward Epsilon Greedy 0.01 Method")
-        plt.plot(self.rewards_array[2].mean(axis=0), label="Reward Epsilon Greedy 0.1 Method")
-        plt.plot(self.rewards_array[3].mean(axis=0), label="Reward UCB 1 Method")
-        plt.plot(self.rewards_array[4].mean(axis=0), label="Reward UCB 2 Method")
-        plt.legend()
-        plt.savefig((str(self.true_path) + "methods_compare.png"), dpi =500)
+    def plot_graphs_methods(self, array_first):
 
+        if array_first == "reward":
 
+            plt.figure(figsize=(40,16))
+            plt.title('Average Reward vs Time steps')
+            plt.xlabel('Time_steps', fontsize=18)
+            plt.ylabel('Reward', fontsize=16)
+            plt.plot(self.rewards_array[0].mean(axis=0), label="Reward Greedy Method")
+            plt.plot(self.rewards_array[1].mean(axis=0), label="Reward Epsilon Greedy 0.01 Method")
+            plt.plot(self.rewards_array[2].mean(axis=0), label="Reward Epsilon Greedy 0.1 Method")
+            plt.plot(self.rewards_array[3].mean(axis=0), label="Reward UCB 1 Method")
+            plt.plot(self.rewards_array[4].mean(axis=0), label="Reward UCB 2 Method")
+            plt.legend()
+            plt.savefig((str(self.true_path) + "reward_methods_compare.png"), dpi =500)
 
-    def plot_graph_greedy(self):
+        elif array_first == "optimal_action":
 
-        plt.figure(figsize=(40,16))
-        plt.title('Average Reward vs Time steps')
-        plt.xlabel('Time_steps', fontsize=18)
-        plt.ylabel('Reward', fontsize=16)
-        plt.plot(self.rewards_array[0].mean(axis=0), label="Reward Greddy Method")
-        plt.legend()
-        plt.savefig((str(self.true_path) + "greedy_method.png"), dpi =500)
-
-
-
-    def plot_graph_epsilon_greedy(self):
-        
-        if epsilon_name == "0.01":
-            name = "0.01"
-            reward = self.reward_array[1]
-        elif epsilon_name == "0.1":
-            name = "0.1"
-            reward = self.reward_array[2]
-
-
-        plt.figure(figsize=(40,16))
-        plt.title('Average Reward vs Time steps')
-        plt.xlabel('Time_steps', fontsize=18)
-        plt.ylabel('Reward', fontsize=16)
-        plt.plot(reward.mean(axis=0), label="Reward Epsilon Greedy Method")
-        plt.legend()
-        plt.savefig((str(self.true_path) + "greedy_method_" + name + "_.png"), dpi =500)
+            plt.figure(figsize=(40,16))
+            plt.title('Optimal Action vs Time steps')
+            plt.xlabel('Time_steps', fontsize=18)
+            plt.ylabel('Optimal Action in %', fontsize=16)
+            plt.plot(self.optimal_action_array[0].mean(axis=0), label="Optimal Greedy Method")
+            plt.plot(self.optimal_action_array[1].mean(axis=0), label="Optimal Epsilon Greedy 0.01 Method")
+            plt.plot(self.optimal_action_array[2].mean(axis=0), label="Optimal Epsilon Greedy 0.1 Method")
+            plt.plot(self.optimal_action_array[3].mean(axis=0), label="Optimal UCB 1 Method")
+            plt.plot(self.optimal_action_array[4].mean(axis=0), label="Optimal UCB 2 Method")
+            plt.legend()
+            plt.savefig((str(self.true_path) + "optimal_methods_compare.png"), dpi =500)
 
 
 
 
-    def plot_graph_ucb(self):
-        
-        if ucb_name == "1":
-            name = "1"
-            reward = self.reward_array[3]
-        elif ucb_name == "2":
-            name = "2"
-            reward = self.reward_array[4]
+
+    def plot_graph_greedy(self, array_first):
+
+        if array_first == "rewards":
+
+            plt.figure(figsize=(40,16))
+            plt.title('Average Reward vs Time steps')
+            plt.xlabel('Time_steps', fontsize=18)
+            plt.ylabel('Reward', fontsize=16)
+            plt.plot(self.rewards_array[0].mean(axis=0), label="Reward Greddy Method")
+            plt.legend()
+            plt.savefig((str(self.true_path) + "reward_greedy_method.png"), dpi =500)
+
+        elif array_first == "optimal_action":
+
+            plt.figure(figsize=(40,16))
+            plt.title('Average Reward vs Time steps')
+            plt.xlabel('Time_steps', fontsize=18)
+            plt.ylabel('Optimal Action in %', fontsize=16)
+            plt.plot(self.optimal_action_array[0].mean(axis=0), label="Optimal Greddy Method")
+            plt.legend()
+            plt.savefig((str(self.true_path) + "optimal_greedy_method.png"), dpi =500)
 
 
 
-        plt.figure(figsize=(40,16))
-        plt.title('Average Reward vs Time steps')
-        plt.xlabel('Time_steps', fontsize=18)
-        plt.ylabel('Reward', fontsize=16)
-        plt.plot(reward.mean(axis=0), label="Reward UCB Method")
-        plt.legend()
-        plt.savefig((str(self.true_path) + "ucb_method_" + name + "_.png"), dpi =500)
+
+    def plot_graph_epsilon_greedy(self, array_first):
+       
+
+        if array_first == "rewards":
+
+            if epsilon_name == "0.01":
+                name = "0.01"
+                reward = self.reward_array[1]
+            elif epsilon_name == "0.1":
+                name = "0.1"
+                reward = self.reward_array[2]
+
+
+            plt.figure(figsize=(40,16))
+            plt.title('Average Reward vs Time steps')
+            plt.xlabel('Time_steps', fontsize=18)
+            plt.ylabel('Reward', fontsize=16)
+            plt.plot(reward.mean(axis=0), label="Reward Epsilon Greedy Method")
+            plt.legend()
+            plt.savefig((str(self.true_path) + "reward_greedy_method_" + name + "_.png"), dpi =500)
+
+
+        elif array_first == "optimal_action":
+
+            if epsilon_name == "0.01":
+                name = "0.01"
+                reward = self.reward_array[1]
+            elif epsilon_name == "0.1":
+                name = "0.1"
+                reward = self.reward_array[2]
+
+
+            plt.figure(figsize=(40,16))
+            plt.title('Average Reward vs Time steps')
+            plt.xlabel('Time_steps', fontsize=18)
+            plt.ylabel('Optimal Action in %', fontsize=16)
+            plt.plot(reward.mean(axis=0), label="Optimal Greedy Method")
+            plt.legend()
+            plt.savefig((str(self.true_path) + "optimal_greedy_method_" + name + "_.png"), dpi =500)
+
+
+
+
+
+
+
+    def plot_graph_ucb(self, array_first):
+       
+        if array_first == "reward":
+
+            if ucb_name == "1":
+                name = "1"
+                reward = self.reward_array[3]
+            elif ucb_name == "2":
+                name = "2"
+                reward = self.reward_array[4]
+
+
+            plt.figure(figsize=(40,16))
+            plt.title('Average Reward vs Time steps')
+            plt.xlabel('Time_steps', fontsize=18)
+            plt.ylabel('Reward', fontsize=16)
+            plt.plot(reward.mean(axis=0), label="Reward UCB Method")
+            plt.legend()
+            plt.savefig((str(self.true_path) + "reward_ucb_method_" + name + "_.png"), dpi =500)
+
+
+        elif array_first == "optimal_action":
+
+            if ucb_name == "1":
+                name = "1"
+                optimal = self.reward_array[3]
+            elif ucb_name == "2":
+                name = "2"
+                optimal = self.reward_array[4]
+
+
+            plt.figure(figsize=(40,16))
+            plt.title('Average Reward vs Time steps')
+            plt.xlabel('Time_steps', fontsize=18)
+            plt.ylabel('Optimal Action in %', fontsize=16)
+            plt.plot(optimal.mean(axis=0), label="Reward UCB Method")
+            plt.legend()
+            plt.savefig((str(self.true_path) + "optimal_ucb_method_" + name + "_.png"), dpi =500)
+
+
 
 
 
