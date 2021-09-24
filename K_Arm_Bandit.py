@@ -11,54 +11,51 @@ class K_armed_Bandit_Problem(object):
 
      
 
-
     # Return Q*(a)
     def k_armed_bandit(self):
         return np.random.normal(0,1,(self.number_bandit_problems, self.k))
     
     
 
-    def greedy(self, q_values):
+    def greedy(self, problem_number):
 
          for i in range(self.number_of_time_step):
 
             action = self.action_choice(action_type = "greedy_action")
-            self.action_value_reward(i, action, problem_number, q_values)
+            self.action_value_reward(i, action, problem_number)
 
-        optimal_action = self.optimal_action(q_values)
+        optimal_action = self.optimal_action(problem_number)
         
         return optimal_action
 
 
 
-
-    def epsilon_greedy(self, q_values):
+    def epsilon_greedy(self, problem_number):
         
         for i in range(self.number_of_time_step):
 
             if np.random.uniform(0,1) < self.epsilon:
 
                 action = self.action_choice(action_type = "epsilon_greedy")
-                self.action_value_reward(i, action, problem_number, q_values)
+                self.action_value_reward(i, action, problem_number)
             
             else:
                 action = self.action_choice(action_type = "greedy_action")
-                self.action_value_reward(i, action, problem_number, q_values)
+                self.action_value_reward(i, action, problem_number)
                 
-        optimal_action = self.optimal_action(q_values)
+        optimal_action = self.optimal_action(problem_number)
         return optimal_action
 
 
 
-
-    def ucb(self, q_values):
+    def ucb(self, problem_number):
         
         for i in range(self.number_of_time_step):
 
             action = self.action_choice(action_type = "ucb_action")
-            self.action_value_reward(i, action, problem_number, q_values)
+            self.action_value_reward(i, action, problem_number)
 
-        optimal_action = self.optimal_action(q_values)
+        optimal_action = self.optimal_action(problem_number)
         return optimal_action
 
 
@@ -78,6 +75,7 @@ class K_armed_Bandit_Problem(object):
         if action_type == "greedy_action":
             action = np.argmax(self.q)
             return action
+
         elif action_type == "epsilon_greedy":
             action = np.random.randint(0, self.k)
             return action
@@ -99,40 +97,50 @@ class K_armed_Bandit_Problem(object):
 
 
 
-    def action_state_reward(count, prob_num, q_values):    
+    def action_state_reward(count, prob_num):    
         
         self.action_each_step[count]=action
-        self.rewards[count] = np.random.normal(q_values[prob_num][action],1)
+        self.rewards[count] = np.random.normal(self.q_values[prob_num][action],1)
         self.actions_taken[action] += 1
         self.q[action] = self.q[action]+1 / self.actions_taken[action] * (self.rewards[count] - self.q[action])
 
 
 
-    def optimal_action(self, q_values, problem_number):
+    def optimal_action(self, problem_number):
 
-        optimal_action = self.action_each_step == np.argmax(q_values[problem_number])
+        optimal_action = self.action_each_step == np.argmax(self.q_values[problem_number])
         return optimal_action
 
 
 
     # Methods  -- greedy, epsilon_greedy, ucb
-    def play_k_armed_bandit(self, q_values, problem_number = 0, methods = "greedy"):
+    def play_k_armed_bandit(self, problem_number = 0, methods = "greedy"):
        
         # Resets Values for each iteration
         self.init_and_reset()
         
         if methods == "greedy":
-            optimal_action= self.greedy(q_values)
+            optimal_action= self.greedy()
             return self.rewards, optimal_action
 
         elif methods == "epsilon_greedy":
-            optimal_action = self.epsilon_greedy(q_values)
+            optimal_action = self.epsilon_greedy()
             return self.rewards optimal_action
 
         elif methods  == "ucb":
-            optimal_action = self.ucb(q_values)
+            optimal_action = self.ucb()
             return self.rewards, optimal_action
         
+
+    # Where it is to play the k armed bandit
+    def play(self, method_type):
+        
+        reward = np.zeros((self.number_bandit_problems, self.number_of_time_step))
+        optimal = np.zeros((self.number_bandit_problems, self.number_of_time_step))
+
+        for i in range(self.number_of_time_step):
+            self.play_k_armed_bandit(problem_number = i, methods = method_type)
+
 
 
 
@@ -153,12 +161,17 @@ class plot_colected_graphs(object):
         self.plot_graphs_methods(array_first = "reward")
         self.plot_graphs_methods(array_first = "optimal_action")
 
-        
 
-        # Print each seperately
+        self.plot_graph_greedy(array_first = "reward")
+        self.plot_graph_greedy(array_first = "optimal_action")
 
 
+        self.plot_graph_greedy(array_first = "reward")
+        self.plot_graph_greedy(array_first = "optimal_action")
 
+
+        self.plot_graph_ucb(array_first = "reward")
+        self.plot_graph_ucb(array_first = "optimal_action")
 
 
 
@@ -179,6 +192,8 @@ class plot_colected_graphs(object):
             plt.plot(self.rewards_array[4].mean(axis=0), label="Reward UCB 2 Method")
             plt.legend()
             plt.savefig((str(self.true_path) + "reward_methods_compare.png"), dpi =500)
+
+
 
         elif array_first == "optimal_action":
 
@@ -210,10 +225,11 @@ class plot_colected_graphs(object):
             plt.legend()
             plt.savefig((str(self.true_path) + "reward_greedy_method.png"), dpi =500)
 
+
         elif array_first == "optimal_action":
 
             plt.figure(figsize=(40,16))
-            plt.title('Average Reward vs Time steps')
+            plt.title('Optimal Action vs Time steps')
             plt.xlabel('Time_steps', fontsize=18)
             plt.ylabel('Optimal Action in %', fontsize=16)
             plt.plot(self.optimal_action_array[0].mean(axis=0), label="Optimal Greddy Method")
@@ -249,17 +265,17 @@ class plot_colected_graphs(object):
 
             if epsilon_name == "0.01":
                 name = "0.01"
-                reward = self.reward_array[1]
+                optimal = self.optimal_action_array[1]
             elif epsilon_name == "0.1":
                 name = "0.1"
-                reward = self.reward_array[2]
+                optimal = self.optimal_action_array[2]
 
 
             plt.figure(figsize=(40,16))
-            plt.title('Average Reward vs Time steps')
+            plt.title('Optimal Action vs Time steps')
             plt.xlabel('Time_steps', fontsize=18)
             plt.ylabel('Optimal Action in %', fontsize=16)
-            plt.plot(reward.mean(axis=0), label="Optimal Greedy Method")
+            plt.plot(optimal.mean(axis=0), label="Optimal Greedy Method")
             plt.legend()
             plt.savefig((str(self.true_path) + "optimal_greedy_method_" + name + "_.png"), dpi =500)
 
@@ -294,17 +310,17 @@ class plot_colected_graphs(object):
 
             if ucb_name == "1":
                 name = "1"
-                optimal = self.reward_array[3]
+                optimal = self.optimal_action_array[3]
             elif ucb_name == "2":
                 name = "2"
-                optimal = self.reward_array[4]
+                optimal = self.optimal_action_array[4]
 
 
             plt.figure(figsize=(40,16))
-            plt.title('Average Reward vs Time steps')
+            plt.title('Optimal Action vs Time steps')
             plt.xlabel('Time_steps', fontsize=18)
             plt.ylabel('Optimal Action in %', fontsize=16)
-            plt.plot(optimal.mean(axis=0), label="Reward UCB Method")
+            plt.plot(optimal.mean(axis=0), label="Optimal UCB Method")
             plt.legend()
             plt.savefig((str(self.true_path) + "optimal_ucb_method_" + name + "_.png"), dpi =500)
 
