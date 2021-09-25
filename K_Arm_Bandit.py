@@ -149,10 +149,9 @@ class K_armed_Bandit_Problem(object):
 
     # Methods  -- greedy, epsilon_greedy, ucb
     def play_k_armed_bandit(self, problem_number = 0, methods = "greedy"):
-       
+
         # Resets Values for each iteration
         self.init_and_reset()
-        
         methods = self.method_identification(methods)
 
         if methods == "greedy":
@@ -233,21 +232,20 @@ class plot_collected_graphs(object):
             plt.title('Average Reward vs Time steps')
             plt.xlabel('Time_steps', fontsize=18)
             plt.ylabel('Reward', fontsize=16)
-            plt.plot(self.reward_array[0].mean(axis=0), label="Reward Alpha 0.01 & Baseline 0")
-            plt.plot(self.reward_array[1].mean(axis=0), label="Reward Alpha 0.01 & Baseline 5")
-            plt.plot(self.reward_array[2].mean(axis=0), label="Reward Alpha 0.01 & Baseline 10")
-            plt.plot(self.reward_array[3].mean(axis=0), label="Reward Alpha 0.1  & Baseline 0")
-            plt.plot(self.reward_array[4].mean(axis=0), label="Reward Alpha 0.1 & Baseline 5")
-            plt.plot(self.reward_array[5].mean(axis=0), label="Reward Alpha 0.1 & Baseline 10")
-            plt.plot(self.reward_array[6].mean(axis=0), label="Reward Alpha 0.5 & Baseline 0")
-            plt.plot(self.reward_array[7].mean(axis=0), label="Reward Alpha 0.5 & Baseline 5")
-            plt.plot(self.reward_array[8].mean(axis=0), label="Reward Alpha 0.5 & Baseline 10")
+            plt.plot(self.rewards_array[0].mean(axis=0), label="Reward Alpha 0.01 & Baseline 0")
+            plt.plot(self.rewards_array[1].mean(axis=0), label="Reward Alpha 0.01 & Baseline 5")
+            plt.plot(self.rewards_array[2].mean(axis=0), label="Reward Alpha 0.01 & Baseline 10")
+            plt.plot(self.rewards_array[3].mean(axis=0), label="Reward Alpha 0.1  & Baseline 0")
+            plt.plot(self.rewards_array[4].mean(axis=0), label="Reward Alpha 0.1 & Baseline 5")
+            plt.plot(self.rewards_array[5].mean(axis=0), label="Reward Alpha 0.1 & Baseline 10")
+            plt.plot(self.rewards_array[6].mean(axis=0), label="Reward Alpha 0.5 & Baseline 0")
+            plt.plot(self.rewards_array[7].mean(axis=0), label="Reward Alpha 0.5 & Baseline 5")
+            plt.plot(self.rewards_array[8].mean(axis=0), label="Reward Alpha 0.5 & Baseline 10")
             plt.legend()
             plt.savefig((str(self.true_path) + self.type_name + "_reward_methods_compare.png"), dpi =500)
 
 
         elif array_first == "optimal_action":
-
 
             plt.figure(figsize=(40,16))
             plt.title('Optimal Action vs Time steps')
@@ -335,7 +333,6 @@ class plot_collected_graphs(object):
                 name = "0.1"
                 reward = self.rewards_array[2]
 
-
             plt.figure(figsize=(40,16))
             plt.title('Average Reward vs Time steps')
             plt.xlabel('Time_steps', fontsize=18)
@@ -353,7 +350,6 @@ class plot_collected_graphs(object):
             elif epsilon_name == "0.1":
                 name = "0.1"
                 optimal = self.optimal_action_array[2]
-
 
             plt.figure(figsize=(40,16))
             plt.title('Optimal Action vs Time steps')
@@ -375,7 +371,6 @@ class plot_collected_graphs(object):
                 name = "2"
                 reward = self.rewards_array[4]
 
-
             plt.figure(figsize=(40,16))
             plt.title('Average Reward vs Time steps')
             plt.xlabel('Time_steps', fontsize=18)
@@ -393,7 +388,6 @@ class plot_collected_graphs(object):
             elif ucb_name == "2":
                 name = "2"
                 optimal = self.optimal_action_array[4]
-
 
             plt.figure(figsize=(40,16))
             plt.title('Optimal Action vs Time steps')
