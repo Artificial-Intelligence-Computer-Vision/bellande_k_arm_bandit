@@ -178,31 +178,43 @@ class K_armed_Bandit_Problem(object):
 
 
 class plot_collected_graphs(object):
-    def __init__(self, reward_array, optimal_action_array):
+    def __init__(self, reward_array, optimal_action_array, name):
         
         # Path
         self.path = "graph_and_chart/"
         self.pdf_type = "regular_pdf/"
-
+        
+        self.type_name = name
         self.rewards_array = reward_array
         self.optimal_action_array = optimal_action_array
 
         self.true_path = self.path + self.pdf_type
+        
+        if self.type_name == "none_gradient":
+            self.plot_graphs_methods(array_first = "reward")
+            self.plot_graphs_methods(array_first = "optimal_action")
 
-        self.plot_graphs_methods(array_first = "reward")
-        self.plot_graphs_methods(array_first = "optimal_action")
+            self.plot_graph_greedy(array_first = "reward")
+            self.plot_graph_greedy(array_first = "optimal_action")
+
+            self.plot_graph_epsilon_greedy(array_first = "reward", epsilon_name = "0.01")
+            self.plot_graph_epsilon_greedy(array_first = "optimal_action", epsilon_name = "0.01")
 
 
-        self.plot_graph_greedy(array_first = "reward")
-        self.plot_graph_greedy(array_first = "optimal_action")
+            self.plot_graph_epsilon_greedy(array_first = "reward", epsilon_name = "0.1")
+            self.plot_graph_epsilon_greedy(array_first = "optimal_action", epsilon_name = "0.1")
+
+            self.plot_graph_ucb(array_first = "reward", ucb_name = "1")
+            self.plot_graph_ucb(array_first = "optimal_action", ucb_name = "1")
+
+            self.plot_graph_ucb(array_first = "reward", ucb_name = "2")
+            self.plot_graph_ucb(array_first = "optimal_action", ucb_name = "2")
+
+        elif self.type_name == "gradient":
+            pass
 
 
-        self.plot_graph_epsilon_greedy(array_first = "reward", epsilon_name = "0.01")
-        self.plot_graph_epsilon_greedy(array_first = "optimal_action", epsilon_name = "0.1")
 
-
-        self.plot_graph_ucb(array_first = "reward", ucb_name = "1")
-        self.plot_graph_ucb(array_first = "optimal_action", ucb_name = "2")
 
 
 
@@ -221,7 +233,7 @@ class plot_collected_graphs(object):
             plt.plot(self.rewards_array[3].mean(axis=0), label="Reward UCB 1 Method")
             plt.plot(self.rewards_array[4].mean(axis=0), label="Reward UCB 2 Method")
             plt.legend()
-            plt.savefig((str(self.true_path) + "reward_methods_compare.png"), dpi =500)
+            plt.savefig((str(self.true_path) + self.type_name + "_reward_methods_compare.png"), dpi =500)
 
 
 
@@ -237,7 +249,7 @@ class plot_collected_graphs(object):
             plt.plot(self.optimal_action_array[3].mean(axis=0), label="Optimal UCB 1 Method")
             plt.plot(self.optimal_action_array[4].mean(axis=0), label="Optimal UCB 2 Method")
             plt.legend()
-            plt.savefig((str(self.true_path) + "optimal_methods_compare.png"), dpi =500)
+            plt.savefig((str(self.true_path) + self.type_name + "_optimal_methods_compare.png"), dpi =500)
 
 
 
@@ -252,7 +264,7 @@ class plot_collected_graphs(object):
             plt.ylabel('Reward', fontsize=16)
             plt.plot(self.rewards_array[0].mean(axis=0), label="Reward Greddy Method")
             plt.legend()
-            plt.savefig((str(self.true_path) + "reward_greedy_method.png"), dpi =500)
+            plt.savefig((str(self.true_path) + self.type_name + "_reward_greedy_method.png"), dpi =500)
 
 
         elif array_first == "optimal_action":
@@ -263,7 +275,7 @@ class plot_collected_graphs(object):
             plt.ylabel('Optimal Action in %', fontsize=16)
             plt.plot(self.optimal_action_array[0].mean(axis=0), label="Optimal Greddy Method")
             plt.legend()
-            plt.savefig((str(self.true_path) + "optimal_greedy_method.png"), dpi =500)
+            plt.savefig((str(self.true_path) + self.type_name + "_optimal_greedy_method.png"), dpi =500)
 
 
 
@@ -287,7 +299,7 @@ class plot_collected_graphs(object):
             plt.ylabel('Reward', fontsize=16)
             plt.plot(reward.mean(axis=0), label="Reward Epsilon Greedy Method")
             plt.legend()
-            plt.savefig((str(self.true_path) + "reward_greedy_method_" + name + "_.png"), dpi =500)
+            plt.savefig((str(self.true_path) + self.type_name + "reward_greedy_method_" + name + "_.png"), dpi =500)
 
 
         elif array_first == "optimal_action":
@@ -306,7 +318,7 @@ class plot_collected_graphs(object):
             plt.ylabel('Optimal Action in %', fontsize=16)
             plt.plot(optimal.mean(axis=0), label="Optimal Greedy Method")
             plt.legend()
-            plt.savefig((str(self.true_path) + "optimal_greedy_method_" + name + "_.png"), dpi =500)
+            plt.savefig((str(self.true_path) + self.type_name + "optimal_greedy_method_" + name + "_.png"), dpi =500)
 
 
 
@@ -329,7 +341,7 @@ class plot_collected_graphs(object):
             plt.ylabel('Reward', fontsize=16)
             plt.plot(reward.mean(axis=0), label="Reward UCB Method")
             plt.legend()
-            plt.savefig((str(self.true_path) + "reward_ucb_method_" + name + "_.png"), dpi =500)
+            plt.savefig((str(self.true_path) + self.type_name + "reward_ucb_method_" + name + "_.png"), dpi =500)
 
 
         elif array_first == "optimal_action":
@@ -348,7 +360,7 @@ class plot_collected_graphs(object):
             plt.ylabel('Optimal Action in %', fontsize=16)
             plt.plot(optimal.mean(axis=0), label="Optimal UCB Method")
             plt.legend()
-            plt.savefig((str(self.true_path) + "optimal_ucb_method_" + name + "_.png"), dpi =500)
+            plt.savefig((str(self.true_path) + self.type_name + "optimal_ucb_method_" + name + "_.png"), dpi =500)
 
 
 
