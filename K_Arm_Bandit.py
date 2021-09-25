@@ -50,12 +50,18 @@ class K_armed_Bandit_Problem(object):
         return optimal_action
 
 
-    def init_and_reset(self):
+    def init_and_reset(self, method = "regular"):
 
         self.q = np.zeros(self.k)
-        self.rewards = np.zeros(self.number_of_time_step)
         self.action_each_step = np.zeros(self.number_of_time_step)
         self.actions_taken = np.ones(self.k)
+
+        if method == "gradient":
+            self.actions_range = np.arange(self.k)
+            self.rewards = self.action_each_step = np.zeros(self.number_of_time_step)
+        else:
+            self.rewards = np.zeros(self.number_of_time_step)
+
         self.q_values = self.k_armed_bandit()
 
 
@@ -74,11 +80,8 @@ class K_armed_Bandit_Problem(object):
             return action
 
         elif action_type == "softmax":
-            action = np.random.choice(self.actions_taken, p=actions_function(self.q))
+            action = np.random.choice(self.actions_range, p=actions_function(self.q))
 
-            while action > 6:
-                action = np.random.choice(self.actions_taken, p=actions_function(self.q))
-            
             return action
 
 
@@ -95,13 +98,21 @@ class K_armed_Bandit_Problem(object):
 
         self.action_each_step[count] = action
         self.rewards[count] = np.random.normal(self.q_values[problem_number][action],1)
+        self.actions_taken[action] += 1
 
         if baseline == "None":
-            self.actions_taken[action] += 1
             self.q[action] = self.q[action] + 1 / self.actions_taken[action] * (self.rewards[count] - self.q[action])
 
         elif baseline == "True":
-            self.actions_taken[action] += 1
+            self.baseline = self.baseline + 1 / (count+1) * (self.rewards[count] - self.baseline)
+            
+            for i in range(self.k):
+                if i == action:
+                    self.q[i] = self.q[i] + self.alpha * (self.rewards[i] - self.baseline) * (1 - self.softmax(self.q)[i])
+                else:
+                    self.q[i] = self.q[i]  - self.alpha * (self.rewards[i] - self.baseline) * (self.softmax(self.q)[i]) 
+
+
 
 
     def optimal_action(self, problem_number):
@@ -210,10 +221,11 @@ class plot_collected_graphs(object):
 
         elif self.type_name == "gradient":
             
-            self.plot_graph_method_gradient()
+            self.plot_graph_method_gradient(array_first = "reward")
+            self.plot_graph_method_gradient(array_first = "optimal_action")
 
 
-    def plot_graph_method_gradient():
+    def plot_graph_method_gradient(self, array_first):
         
         if array_first == "reward":
 
@@ -234,7 +246,7 @@ class plot_collected_graphs(object):
             plt.savefig((str(self.true_path) + self.type_name + "_reward_methods_compare.png"), dpi =500)
 
 
-        elif array_first == "optimal":
+        elif array_first == "optimal_action":
 
 
             plt.figure(figsize=(40,16))
@@ -407,27 +419,17 @@ class K_armed_Bandit_Problem_Gradient(K_armed_Bandit_Problem):
     
     def Gradient_Bandit(self, problem_number):
         
-        self.init_and_reset()
+        self.init_and_reset(method = "gradient")
 
         for i in range(self.number_of_time_step):
-
-            action = int(self.action_choice(action_type = "softmax", actions_function = self.softmax))
+            action = self.action_choice(action_type = "softmax", actions_function = self.softmax)
             self.action_value_reward(i, action, problem_number, baseline = "True")
-            self.baseline = self.baseline + 1 / (i+1) * (self.rewards[i] - self.baseline)
-            self.gradient(action)
 
         optimal_action = self.optimal_action(problem_number)
         return self.rewards, optimal_action
 
 
 
-    def gradient(self, action):
-        
-        for i in range(self.k):
-            if i == action:
-                self.q[i] = self.q[i] + self.alpha * (self.rewards[i] - self.baseline) * (1 - self.softmax(self.q)[i])
-            else:
-                self.q[i] = self.q[i]  - self.alpha * (self.rewards[i] - self.baseline) * (self.softmax(self.q)[i]) 
 
 
 
