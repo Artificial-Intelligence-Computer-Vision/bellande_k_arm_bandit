@@ -2,7 +2,7 @@ from header_imports import *
 
 
 class K_armed_Bandit_Problem(object):
-    def __init__(self, number_bandit_problems = 500, k = 7, epsilon = 0.1, c = 1):
+    def __init__(self, number_bandit_problems = 500, k = 7, epsilon = 0.01, c = 1):
         self.number_bandit_problems = number_bandit_problems
         self.k = k
         self.epsilon = epsilon
@@ -29,7 +29,7 @@ class K_armed_Bandit_Problem(object):
 
 
     def epsilon_greedy(self, problem_number):
-        
+
         for i in range(self.number_of_time_step):
 
             if np.random.uniform(0,1) < self.epsilon:
@@ -45,7 +45,7 @@ class K_armed_Bandit_Problem(object):
 
 
     def ucb(self, problem_number):
-        
+
         for i in range(self.number_of_time_step):
             action = self.action_choice(action_type = "ucb_action")
             self.action_value_reward(i, action, problem_number)
@@ -66,7 +66,7 @@ class K_armed_Bandit_Problem(object):
 
 
     def action_choice(self, action_type, actions = None):
-
+        
         if action_type == "greedy_action":
             action = np.argmax(self.q)
             return action
@@ -85,7 +85,7 @@ class K_armed_Bandit_Problem(object):
         
 
 
-    def ucb_action_choise(self, q, actions):
+    def ucb_action_choise(self):
 
         action_array = np.zeros(self.k)
         for i in range(self.k):
@@ -111,6 +111,31 @@ class K_armed_Bandit_Problem(object):
         optimal_action = self.action_each_step == np.argmax(self.q_values[problem_number])
         return optimal_action
 
+    
+    def method_identification(self, methods):
+        
+        if methods == "greedy":
+            return methods
+
+        elif methods == "epsilon_greedy_001":
+            self.epsilon = 0.01
+            methods = "epsilon_greedy"
+            return methods
+
+        elif methods == "epsilon_greedy_01":
+            self.epsilon = 0.1
+            methods = "epsilon_greedy"
+            return methods
+
+        elif methods == "ucb_1":
+            self.c = 1
+            methods = "ucb"
+            return methods
+
+        elif methods == "ucb_2":
+            self.c = 2
+            methods = "ucb"
+            return methods
 
 
     # Methods  -- greedy, epsilon_greedy, ucb
@@ -119,14 +144,14 @@ class K_armed_Bandit_Problem(object):
         # Resets Values for each iteration
         self.init_and_reset()
         
+        methods = self.method_identification(methods)
+
         if methods == "greedy":
             optimal_action = self.greedy(problem_number)
             return self.rewards, optimal_action
 
         elif methods == "epsilon_greedy":
-            print("here")
             optimal_action = self.epsilon_greedy(problem_number)
-            print("here")
             return self.rewards, optimal_action
 
         elif methods  == "ucb":
@@ -156,12 +181,11 @@ class plot_collected_graphs(object):
     def __init__(self, reward_array, optimal_action_array):
         
         # Path
-        self.path = "/graph_and_charts/"
-        self.pdf_type = "/regular_pdf"
+        self.path = "graph_and_chart/"
+        self.pdf_type = "regular_pdf/"
 
-        self.reward_array = reward_array
+        self.rewards_array = reward_array
         self.optimal_action_array = optimal_action_array
-
 
         self.true_path = self.path + self.pdf_type
 
@@ -173,12 +197,12 @@ class plot_collected_graphs(object):
         self.plot_graph_greedy(array_first = "optimal_action")
 
 
-        self.plot_graph_greedy(array_first = "reward")
-        self.plot_graph_greedy(array_first = "optimal_action")
+        self.plot_graph_epsilon_greedy(array_first = "reward", epsilon_name = "0.01")
+        self.plot_graph_epsilon_greedy(array_first = "optimal_action", epsilon_name = "0.1")
 
 
-        self.plot_graph_ucb(array_first = "reward")
-        self.plot_graph_ucb(array_first = "optimal_action")
+        self.plot_graph_ucb(array_first = "reward", ucb_name = "1")
+        self.plot_graph_ucb(array_first = "optimal_action", ucb_name = "2")
 
 
 
@@ -244,17 +268,17 @@ class plot_collected_graphs(object):
 
 
 
-    def plot_graph_epsilon_greedy(self, array_first):
+    def plot_graph_epsilon_greedy(self, array_first, epsilon_name):
        
 
         if array_first == "rewards":
 
             if epsilon_name == "0.01":
                 name = "0.01"
-                reward = self.reward_array[1]
+                reward = self.rewards_array[1]
             elif epsilon_name == "0.1":
                 name = "0.1"
-                reward = self.reward_array[2]
+                reward = self.rewards_array[2]
 
 
             plt.figure(figsize=(40,16))
@@ -287,16 +311,16 @@ class plot_collected_graphs(object):
 
 
 
-    def plot_graph_ucb(self, array_first):
+    def plot_graph_ucb(self, array_first, ucb_name):
        
         if array_first == "reward":
 
             if ucb_name == "1":
                 name = "1"
-                reward = self.reward_array[3]
+                reward = self.rewards_array[3]
             elif ucb_name == "2":
                 name = "2"
-                reward = self.reward_array[4]
+                reward = self.rewards_array[4]
 
 
             plt.figure(figsize=(40,16))
