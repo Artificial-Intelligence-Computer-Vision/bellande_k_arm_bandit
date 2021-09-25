@@ -9,12 +9,10 @@ class K_armed_Bandit_Problem(object):
         self.c = c
         self.number_of_time_step = 1000
 
-     
 
     # Return Q*(a)
     def k_armed_bandit(self):
         return np.random.normal(0,1, (self.number_bandit_problems, self.k))
-    
     
 
     def greedy(self, problem_number):
@@ -25,7 +23,6 @@ class K_armed_Bandit_Problem(object):
 
         optimal_action = self.optimal_action(problem_number)
         return optimal_action
-
 
 
     def epsilon_greedy(self, problem_number):
@@ -43,7 +40,6 @@ class K_armed_Bandit_Problem(object):
         return optimal_action
 
 
-
     def ucb(self, problem_number):
 
         for i in range(self.number_of_time_step):
@@ -52,7 +48,6 @@ class K_armed_Bandit_Problem(object):
 
         optimal_action = self.optimal_action(problem_number)
         return optimal_action
-
 
 
     def init_and_reset(self):
@@ -64,8 +59,7 @@ class K_armed_Bandit_Problem(object):
         self.q_values = self.k_armed_bandit()
 
 
-
-    def action_choice(self, action_type, actions = None):
+    def action_choice(self, action_type, actions_function = None):
         
         if action_type == "greedy_action":
             action = np.argmax(self.q)
@@ -80,9 +74,8 @@ class K_armed_Bandit_Problem(object):
             return action
 
         elif action_type == "softmax":
-            action = np.random.choice(self.actions_taken, p=softmax(self.q))
+            action = np.random.choice(self.actions_taken, p=actions_function(self.q))
             return action
-        
 
 
     def ucb_action_choise(self):
@@ -94,7 +87,6 @@ class K_armed_Bandit_Problem(object):
         return np.argmax(action_array)
 
 
-
     def action_value_reward(self, count, action, problem_number, baseline = "None"):
 
         self.action_each_step[count] = action
@@ -102,8 +94,10 @@ class K_armed_Bandit_Problem(object):
 
         if baseline == "None":
             self.actions_taken[action] += 1
-            self.q[action] = self.q[action]+1 / self.actions_taken[action] * (self.rewards[count] - self.q[action])
+            self.q[action] = self.q[action] + 1 / self.actions_taken[action] * (self.rewards[count] - self.q[action])
 
+        elif baseline == "True":
+            self.actions_taken[action] += 1
 
 
     def optimal_action(self, problem_number):
@@ -176,7 +170,6 @@ class K_armed_Bandit_Problem(object):
             return reward, optimal
 
 
-
 class plot_collected_graphs(object):
     def __init__(self, reward_array, optimal_action_array, name):
         
@@ -191,6 +184,7 @@ class plot_collected_graphs(object):
         self.true_path = self.path + self.pdf_type
         
         if self.type_name == "none_gradient":
+
             self.plot_graphs_methods(array_first = "reward")
             self.plot_graphs_methods(array_first = "optimal_action")
 
@@ -211,12 +205,49 @@ class plot_collected_graphs(object):
             self.plot_graph_ucb(array_first = "optimal_action", ucb_name = "2")
 
         elif self.type_name == "gradient":
-            pass
+            
+            self.plot_graph_method_gradient()
 
 
+    def plot_graph_method_gradient():
+        
+        if array_first == "reward":
+
+            plt.figure(figsize=(40,16))
+            plt.title('Average Reward vs Time steps')
+            plt.xlabel('Time_steps', fontsize=18)
+            plt.ylabel('Reward', fontsize=16)
+            plt.plot(self.reward_array[0].mean(axis=0), label="Reward Alpha 0.01 & Baseline 0")
+            plt.plot(self.reward_array[1].mean(axis=0), label="Reward Alpha 0.01 & Baseline 5")
+            plt.plot(self.reward_array[2].mean(axis=0), label="Reward Alpha 0.01 & Baseline 10")
+            plt.plot(self.reward_array[3].mean(axis=0), label="Reward Alpha 0.1  & Baseline 0")
+            plt.plot(self.reward_array[4].mean(axis=0), label="Reward Alpha 0.1 & Baseline 5")
+            plt.plot(self.reward_array[5].mean(axis=0), label="Reward Alpha 0.1 & Baseline 10")
+            plt.plot(self.reward_array[6].mean(axis=0), label="Reward Alpha 0.5 & Baseline 0")
+            plt.plot(self.reward_array[7].mean(axis=0), label="Reward Alpha 0.5 & Baseline 5")
+            plt.plot(self.reward_array[8].mean(axis=0), label="Reward Alpha 0.5 & Baseline 10")
+            plt.legend()
+            plt.savefig((str(self.true_path) + self.type_name + "_reward_methods_compare.png"), dpi =500)
 
 
+        elif array_first == "optimal":
 
+
+            plt.figure(figsize=(40,16))
+            plt.title('Optimal Action vs Time steps')
+            plt.xlabel('Time_steps', fontsize=18)
+            plt.ylabel('Optimal', fontsize=16)
+            plt.plot(self.optimal_action_array[0].mean(axis=0)*100, label="Optimal Alpha 0.01 & Baseline 0")
+            plt.plot(self.optimal_action_array[1].mean(axis=0)*100, label="Optimal Alpha 0.01 & Baseline 5")
+            plt.plot(self.optimal_action_array[2].mean(axis=0)*100, label="Optimal Alpha 0.01 & Baseline 10")
+            plt.plot(self.optimal_action_array[3].mean(axis=0)*100, label="Optimal Alpha 0.1  & Baseline 0")
+            plt.plot(self.optimal_action_array[4].mean(axis=0)*100, label="Optimal Alpha 0.1 & Baseline 5")
+            plt.plot(self.optimal_action_array[5].mean(axis=0)*100, label="Optimal Alpha 0.1 & Baseline 10")
+            plt.plot(self.optimal_action_array[6].mean(axis=0)*100, label="Optimal Alpha 0.5 & Baseline 0")
+            plt.plot(self.optimal_action_array[7].mean(axis=0)*100, label="Optimal Alpha 0.5 & Baseline 5")
+            plt.plot(self.optimal_action_array[8].mean(axis=0)*100, label="Optimal Alpha 0.5 & Baseline 10")
+            plt.legend()
+            plt.savefig((str(self.true_path) + self.type_name + "_optimal_methods_compare.png"), dpi =500)
 
 
     def plot_graphs_methods(self, array_first):
@@ -243,15 +274,13 @@ class plot_collected_graphs(object):
             plt.title('Optimal Action vs Time steps')
             plt.xlabel('Time_steps', fontsize=18)
             plt.ylabel('Optimal Action in %', fontsize=16)
-            plt.plot(self.optimal_action_array[0].mean(axis=0), label="Optimal Greedy Method")
-            plt.plot(self.optimal_action_array[1].mean(axis=0), label="Optimal Epsilon Greedy 0.01 Method")
-            plt.plot(self.optimal_action_array[2].mean(axis=0), label="Optimal Epsilon Greedy 0.1 Method")
-            plt.plot(self.optimal_action_array[3].mean(axis=0), label="Optimal UCB 1 Method")
-            plt.plot(self.optimal_action_array[4].mean(axis=0), label="Optimal UCB 2 Method")
+            plt.plot(self.optimal_action_array[0].mean(axis=0)*100, label="Optimal Greedy Method")
+            plt.plot(self.optimal_action_array[1].mean(axis=0)*100, label="Optimal Epsilon Greedy 0.01 Method")
+            plt.plot(self.optimal_action_array[2].mean(axis=0)*100, label="Optimal Epsilon Greedy 0.1 Method")
+            plt.plot(self.optimal_action_array[3].mean(axis=0)*100, label="Optimal UCB 1 Method")
+            plt.plot(self.optimal_action_array[4].mean(axis=0)*100, label="Optimal UCB 2 Method")
             plt.legend()
             plt.savefig((str(self.true_path) + self.type_name + "_optimal_methods_compare.png"), dpi =500)
-
-
 
 
     def plot_graph_greedy(self, array_first):
@@ -273,11 +302,9 @@ class plot_collected_graphs(object):
             plt.title('Optimal Action vs Time steps')
             plt.xlabel('Time_steps', fontsize=18)
             plt.ylabel('Optimal Action in %', fontsize=16)
-            plt.plot(self.optimal_action_array[0].mean(axis=0), label="Optimal Greddy Method")
+            plt.plot(self.optimal_action_array[0].mean(axis=0)*100, label="Optimal Greddy Method")
             plt.legend()
             plt.savefig((str(self.true_path) + self.type_name + "_optimal_greedy_method.png"), dpi =500)
-
-
 
 
     def plot_graph_epsilon_greedy(self, array_first, epsilon_name):
@@ -316,11 +343,9 @@ class plot_collected_graphs(object):
             plt.title('Optimal Action vs Time steps')
             plt.xlabel('Time_steps', fontsize=18)
             plt.ylabel('Optimal Action in %', fontsize=16)
-            plt.plot(optimal.mean(axis=0), label="Optimal Greedy Method")
+            plt.plot(optimal.mean(axis=0)*100, label="Optimal Greedy Method")
             plt.legend()
             plt.savefig((str(self.true_path) + self.type_name + "optimal_greedy_method_" + name + "_.png"), dpi =500)
-
-
 
 
     def plot_graph_ucb(self, array_first, ucb_name):
@@ -358,23 +383,22 @@ class plot_collected_graphs(object):
             plt.title('Optimal Action vs Time steps')
             plt.xlabel('Time_steps', fontsize=18)
             plt.ylabel('Optimal Action in %', fontsize=16)
-            plt.plot(optimal.mean(axis=0), label="Optimal UCB Method")
+            plt.plot(optimal.mean(axis=0)*100, label="Optimal UCB Method")
             plt.legend()
             plt.savefig((str(self.true_path) + self.type_name + "optimal_ucb_method_" + name + "_.png"), dpi =500)
 
 
-
 # Gradient Bandit with baseline
 class K_armed_Bandit_Problem_Gradient(K_armed_Bandit_Problem):
-    def __init__(self, alpha, baseline):
+    def __init__(self, alpha = 0.01, baseline = 0):
         super().__init__()
 
         self.alpha = alpha
         self.baseline = baseline
 
 
-    def softmax(user_input):
-        return np.exp(user_input)/np.exp(user_input).sum()
+    def softmax(self, q):
+        return np.exp(q) / np.exp(q).sum()
 
     
     def Gradient_Bandit(self, problem_number):
@@ -383,20 +407,30 @@ class K_armed_Bandit_Problem_Gradient(K_armed_Bandit_Problem):
 
         for i in range(self.number_of_time_step):
 
-            action = self.action_choice(action_type = "softmax")
-            self.action_value_reward(i, action, problem_number)
-
-            for i in range(self.k):
-                if i == action:
-                    self.q[i] = self.q[i] + self.alpha * (self.rewards[i] - self.baseline) * (1 - self.softmax(self.q)[i])
-                else:
-                    self.q[i] = sel.q[i]  - self.alpha * (self.rewards[i] - self.baseline) * (self.softmax(self.q)[i]) 
-
-            self.actions_taken[action] += 1
-
+            action = int(self.action_choice(action_type = "softmax", actions_function = self.softmax))
+            print(action)
+            self.action_value_reward(i, action, problem_number, baseline = "True")
+            self.baseline = self.baseline + 1 / (i+1) * (self.rewards[i] - self.baseline)
+            self.gradient(action)
 
         optimal_action = self.optimal_action()
-
         return self.rewards, optimal_action
+
+
+
+    def gradient(self, action):
+        
+        for i in range(self.k):
+            if i == action:
+                self.q[i] = self.q[i] + self.alpha * (self.rewards[i] - self.baseline) * (1 - self.softmax(self.q)[i])
+            else:
+                self.q[i] = self.q[i]  - self.alpha * (self.rewards[i] - self.baseline) * (self.softmax(self.q)[i]) 
+
+
+
+        
+
+
+
                 
         
