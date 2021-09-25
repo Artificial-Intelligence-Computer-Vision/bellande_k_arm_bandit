@@ -75,6 +75,10 @@ class K_armed_Bandit_Problem(object):
 
         elif action_type == "softmax":
             action = np.random.choice(self.actions_taken, p=actions_function(self.q))
+
+            while action > 6:
+                action = np.random.choice(self.actions_taken, p=actions_function(self.q))
+            
             return action
 
 
@@ -408,12 +412,11 @@ class K_armed_Bandit_Problem_Gradient(K_armed_Bandit_Problem):
         for i in range(self.number_of_time_step):
 
             action = int(self.action_choice(action_type = "softmax", actions_function = self.softmax))
-            print(action)
             self.action_value_reward(i, action, problem_number, baseline = "True")
             self.baseline = self.baseline + 1 / (i+1) * (self.rewards[i] - self.baseline)
             self.gradient(action)
 
-        optimal_action = self.optimal_action()
+        optimal_action = self.optimal_action(problem_number)
         return self.rewards, optimal_action
 
 

@@ -43,6 +43,7 @@ if __name__ == "__main__":
         for i in range(len(methods_array)):
 
             K_armed_Bandit_Problem_obj = K_armed_Bandit_Problem_Gradient()
+            print(methods_array[i])
             reward_array, optimal_action_array = K_armed_Bandit_Problem_obj.play(method_type = methods_array[i], alpha_baseline = "True", function = K_armed_Bandit_Problem_obj.Gradient_Bandit)
             reward_array.append(reward)
             optimal_action_array.append(optimal)
