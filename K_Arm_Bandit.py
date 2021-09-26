@@ -58,7 +58,7 @@ class K_armed_Bandit_Problem(object):
 
         if method == "gradient":
             self.actions_range = np.arange(self.k)
-            self.rewards = self.action_each_step = np.zeros(self.number_of_time_step)
+            self.rewards = np.zeros(self.number_of_time_step)
         else:
             self.rewards = np.zeros(self.number_of_time_step)
         
@@ -114,10 +114,7 @@ class K_armed_Bandit_Problem(object):
 
 
     def optimal_action(self, problem_number):
-
         optimal_action = self.action_each_step == np.argmax(self.q_values[problem_number])
-        # print(np.argmax(self.q_values[problem_number]))
-        # print(optimal_action)
         return optimal_action
 
     
@@ -151,24 +148,31 @@ class K_armed_Bandit_Problem(object):
     def play_k_armed_bandit(self, problem_number = 0, methods = "greedy"):
 
         # Resets Values for each iteration
-        self.init_and_reset()
         methods = self.method_identification(methods)
 
         if methods == "greedy":
+            self.init_and_reset()
             optimal_action = self.greedy(problem_number)
             return self.rewards, optimal_action
 
         elif methods == "epsilon_greedy":
+            self.init_and_reset()
             optimal_action = self.epsilon_greedy(problem_number)
             return self.rewards, optimal_action
 
         elif methods  == "ucb":
+            self.init_and_reset()
             optimal_action = self.ucb(problem_number)
             return self.rewards, optimal_action
-        
+
+        else:
+            self.init_and_reset(method = "gradient")
+            optimal_action = self.Gradient_Bandit(problem_number)
+            return self.rewards, optimal_action
+
 
     # Where it is to play the k armed bandit
-    def play(self, method_type, alpha_baseline = "False", function=None):
+    def play(self, method_type, alpha_baseline = "False"):
         
         reward = np.zeros((self.number_bandit_problems, self.number_of_time_step))
         optimal = np.zeros((self.number_bandit_problems, self.number_of_time_step))
@@ -180,7 +184,7 @@ class K_armed_Bandit_Problem(object):
 
         elif alpha_baseline == "True":
             for i in range(self.number_bandit_problems):
-                reward[i], optimal[i] = function(problem_number = i)
+                reward[i], optimal[i] = self.play_k_armed_bandit(problem_number = i, methods = method_type)
             return reward, optimal
 
 
@@ -234,13 +238,13 @@ class plot_collected_graphs(object):
             plt.ylabel('Reward', fontsize=16)
             plt.plot(self.rewards_array[0].mean(axis=0), label="Reward Alpha 0.01 & Baseline 0")
             plt.plot(self.rewards_array[1].mean(axis=0), label="Reward Alpha 0.01 & Baseline 5")
-            # plt.plot(self.rewards_array[2].mean(axis=0), label="Reward Alpha 0.01 & Baseline 10")
-            # plt.plot(self.rewards_array[3].mean(axis=0), label="Reward Alpha 0.1  & Baseline 0")
-            # plt.plot(self.rewards_array[4].mean(axis=0), label="Reward Alpha 0.1 & Baseline 5")
-            # plt.plot(self.rewards_array[5].mean(axis=0), label="Reward Alpha 0.1 & Baseline 10")
-            # plt.plot(self.rewards_array[6].mean(axis=0), label="Reward Alpha 0.5 & Baseline 0")
-            # plt.plot(self.rewards_array[7].mean(axis=0), label="Reward Alpha 0.5 & Baseline 5")
-            # plt.plot(self.rewards_array[8].mean(axis=0), label="Reward Alpha 0.5 & Baseline 10")
+            plt.plot(self.rewards_array[2].mean(axis=0), label="Reward Alpha 0.01 & Baseline 10")
+            plt.plot(self.rewards_array[3].mean(axis=0), label="Reward Alpha 0.1  & Baseline 0")
+            plt.plot(self.rewards_array[4].mean(axis=0), label="Reward Alpha 0.1 & Baseline 5")
+            plt.plot(self.rewards_array[5].mean(axis=0), label="Reward Alpha 0.1 & Baseline 10")
+            plt.plot(self.rewards_array[6].mean(axis=0), label="Reward Alpha 0.5 & Baseline 0")
+            plt.plot(self.rewards_array[7].mean(axis=0), label="Reward Alpha 0.5 & Baseline 5")
+            plt.plot(self.rewards_array[8].mean(axis=0), label="Reward Alpha 0.5 & Baseline 10")
             plt.legend()
             plt.savefig((str(self.true_path) + self.type_name + "_reward_methods_compare.png"), dpi =500)
 
@@ -252,13 +256,13 @@ class plot_collected_graphs(object):
             plt.ylabel('Optimal', fontsize=16)
             plt.plot(self.optimal_action_array[0].mean(axis=0)*100, label="Optimal Alpha 0.01 & Baseline 0")
             plt.plot(self.optimal_action_array[1].mean(axis=0)*100, label="Optimal Alpha 0.01 & Baseline 5")
-            # plt.plot(self.optimal_action_array[2].mean(axis=0)*100, label="Optimal Alpha 0.01 & Baseline 10")
-            # plt.plot(self.optimal_action_array[3].mean(axis=0)*100, label="Optimal Alpha 0.1  & Baseline 0")
-            # plt.plot(self.optimal_action_array[4].mean(axis=0)*100, label="Optimal Alpha 0.1 & Baseline 5")
-            # plt.plot(self.optimal_action_array[5].mean(axis=0)*100, label="Optimal Alpha 0.1 & Baseline 10")
-            # plt.plot(self.optimal_action_array[6].mean(axis=0)*100, label="Optimal Alpha 0.5 & Baseline 0")
-            # plt.plot(self.optimal_action_array[7].mean(axis=0)*100, label="Optimal Alpha 0.5 & Baseline 5")
-            # plt.plot(self.optimal_action_array[8].mean(axis=0)*100, label="Optimal Alpha 0.5 & Baseline 10")
+            plt.plot(self.optimal_action_array[2].mean(axis=0)*100, label="Optimal Alpha 0.01 & Baseline 10")
+            plt.plot(self.optimal_action_array[3].mean(axis=0)*100, label="Optimal Alpha 0.1  & Baseline 0")
+            plt.plot(self.optimal_action_array[4].mean(axis=0)*100, label="Optimal Alpha 0.1 & Baseline 5")
+            plt.plot(self.optimal_action_array[5].mean(axis=0)*100, label="Optimal Alpha 0.1 & Baseline 10")
+            plt.plot(self.optimal_action_array[6].mean(axis=0)*100, label="Optimal Alpha 0.5 & Baseline 0")
+            plt.plot(self.optimal_action_array[7].mean(axis=0)*100, label="Optimal Alpha 0.5 & Baseline 5")
+            plt.plot(self.optimal_action_array[8].mean(axis=0)*100, label="Optimal Alpha 0.5 & Baseline 10")
             plt.legend()
             plt.savefig((str(self.true_path) + self.type_name + "_optimal_methods_compare.png"), dpi =500)
 
@@ -407,14 +411,12 @@ class K_armed_Bandit_Problem_Gradient(K_armed_Bandit_Problem):
     
     def Gradient_Bandit(self, problem_number):
         
-        self.init_and_reset(method = "gradient")
-
         for i in range(self.number_of_time_step):
             action = self.action_choice(action_type = "softmax", actions_function = self.softmax)
             self.action_value_reward(i, action, problem_number, baseline = "True")
 
         optimal_action = self.optimal_action(problem_number)
-        return self.rewards, optimal_action
+        return optimal_action
 
 
 
