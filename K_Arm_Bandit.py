@@ -55,13 +55,9 @@ class K_armed_Bandit_Problem(object):
         self.q = np.zeros(self.k)
         self.action_each_step = np.zeros(self.number_of_time_step)
         self.actions_taken = np.ones(self.k)
-
+        self.rewards = np.zeros(self.number_of_time_step)
         if method == "gradient":
             self.actions_range = np.arange(self.k)
-            self.rewards = np.zeros(self.number_of_time_step)
-        else:
-            self.rewards = np.zeros(self.number_of_time_step)
-        
         self.q_values = self.k_armed_bandit()
 
 

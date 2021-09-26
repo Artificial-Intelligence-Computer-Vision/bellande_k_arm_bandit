@@ -32,7 +32,6 @@ if __name__ == "__main__":
 
         # Array to plot
         methods_array = [[0.01, 0], [0.01, 5], [0.01, 10], [0.1, 0], [0.1, 5], [0.1, 10], [0.5, 0], [0.5, 5], [0.5, 10]]
-        methods_array = [[0.01, 0], [0.01, 5]]
         reward_array = []
         optimal_action_array = []
 
