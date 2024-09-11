@@ -14,7 +14,7 @@
 - [![Bellande Probabilistic Function](https://img.shields.io/badge/Bellande%20-Probabilistic-0099cc?style=for-the-badge)](https://github.com/RonaldsonBellande/bellande_probabilistic)
 
 
-## Bellande K Arm Bandit through Bellande Probabilistic
+## Bellande K Arm Bandit through Bellande Probabilistic API
 - 
 
 ## License
