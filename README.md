@@ -11,7 +11,11 @@
 - **Ronaldson Bellande**
 
 ## Bellande Probabilistic Function
-- [![Bellande PRobabilistic Function](https://img.shields.io/badge/Explore%20Our-Github-0099cc?style=for-the-badge)](https://github.com/RonaldsonBellande/bellande_probabilistic)
+- [![Bellande Probabilistic Function](https://img.shields.io/badge/Bellande%20-Probabilistic-0099cc?style=for-the-badge)](https://github.com/RonaldsonBellande/bellande_probabilistic)
+
+
+## Bellande K Arm Bandit through Bellande Probabilistic
+- 
 
 ## License
 This Algorithm or Models is distributed under the [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/), see [LICENSE](https://github.com/RonaldsonBellande/bellande_probabilistic/blob/main/LICENSE) and [NOTICE](https://github.com/RonaldsonBellande/bellande_probabilistic/blob/main/LICENSE) for more information.
